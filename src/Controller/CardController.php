@@ -12,6 +12,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 
 #[AsController]
 class CardController extends AbstractController
@@ -22,7 +23,7 @@ class CardController extends AbstractController
         /** @var Card $card */
         $card = $cardRepository->findOneBy(['user' => $this->getUser()]);
         if ($card == null) {
-            return $this->json(['message' => 'Card not found'], 404);
+            return $this->json(['message' => 'Card not found'], Response::HTTP_NOT_FOUND);
         }
 
         $card->activate();
@@ -41,7 +42,7 @@ class CardController extends AbstractController
         /** @var Card $card */
         $card = $cardRepository->findOneBy(['user' => $this->getUser()]);
         if ($card == null) {
-            return $this->json(['message' => 'Card not found'], 404);
+            return $this->json(['message' => 'Card not found'], Response::HTTP_NOT_FOUND);
         }
 
         $data = json_decode($request->getContent(), true);
@@ -90,7 +91,7 @@ class CardController extends AbstractController
         /** @var Card $card */
         $card = $cardRepository->findOneBy(['user' => $this->getUser()]);
         if ($card == null) {
-            return $this->json(['message' => 'Card not found'], 404);
+            return $this->json(['message' => 'Card not found'], Response::HTTP_NOT_FOUND);
         }
 
         $data = json_decode($request->getContent(), true);
