@@ -94,11 +94,31 @@ class CardController extends AbstractController
         }
 
         $data = json_decode($request->getContent(), true);
+        if (array_key_exists('amount', $data) == false) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Amount is required'
+            ]);
+        }
+        if (array_key_exists('pinCode', $data) == false) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Pin code is required'
+            ]);
+        }
+
         $amount = floatval($data['amount']) ?? 0;
+        $pinCode = intval($data['pinCode']) ?? 0;
         if ($amount <= 0) {
             return $this->json([
                 'success' => false,
                 'message' => 'Invalid amount'
+            ]);
+        }
+        if ($pinCode != $card->getPinCode()) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Invalid Pin code'
             ]);
         }
 
@@ -115,7 +135,7 @@ class CardController extends AbstractController
 
         $transaction = new Transaction();
         $transaction->setAmount($amount)
-            ->setDescription("Deduct card")
+            ->setDescription("Deducted from card")
             ->setStatus('completed')
             ->setType('payment')
             ->setUser($currentUser);
