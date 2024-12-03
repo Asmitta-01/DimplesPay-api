@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Transaction;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Attribute\Route;
@@ -39,6 +40,12 @@ class WalletController extends AbstractController
         $currentUser = $this->getUser();
         $wallet = $currentUser->getWallet();
         $wallet->setBalance($wallet->getBalance() + $amount);
+
+        $transaction = new Transaction();
+        $transaction->setAmount($amount)
+            ->setDescription("Top-up wallet")
+            ->setStatus('completed')
+            ->setType('top-up');
 
         $entityManagerInterface->persist($wallet);
         $entityManagerInterface->flush();

@@ -46,6 +46,14 @@ class Card
     #[ORM\Column]
     private ?int $pinCode = null;
 
+    public function __construct()
+    {
+        $this->status = 'inactive';
+        $this->balance = 0.0;
+        $this->createdAt = new \DateTimeImmutable();
+        $this->updatedAt = new \DateTimeImmutable();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -107,6 +115,13 @@ class Card
     public function setBalance(float $balance): static
     {
         $this->balance = $balance;
+
+        return $this;
+    }
+
+    public function activate(): static
+    {
+        $this->activationDate = new \DateTime();
 
         return $this;
     }
