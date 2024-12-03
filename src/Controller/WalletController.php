@@ -45,9 +45,11 @@ class WalletController extends AbstractController
         $transaction->setAmount($amount)
             ->setDescription("Top-up wallet")
             ->setStatus('completed')
-            ->setType('top-up');
+            ->setType('top-up')
+            ->setUser($currentUser);
 
         $entityManagerInterface->persist($wallet);
+        $entityManagerInterface->persist($transaction);
         $entityManagerInterface->flush();
 
         return $this->json([
