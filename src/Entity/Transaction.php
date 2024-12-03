@@ -35,7 +35,7 @@ class Transaction
     private ?Card $card = null;
 
     /**
-     * Values: `top-up`, `refund`, `payment`, `transfer`
+     * Values: `top-up`, `refund`, `payment`, `transfer`, `gift-card`
      */
     #[ORM\Column(length: 255)]
     private ?string $type = null;

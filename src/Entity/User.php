@@ -42,9 +42,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Transaction::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $transactions;
 
+    /**
+     * @var Collection<int, GiftCard>
+     */
+    #[ORM\OneToMany(targetEntity: GiftCard::class, mappedBy: 'owner')]
+    private Collection $giftCards;
+
     public function __construct()
     {
         $this->transactions = new ArrayCollection();
+        $this->giftCards = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -150,6 +157,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($transaction->getUser() === $this) {
                 $transaction->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, GiftCard>
+     */
+    public function getGiftCards(): Collection
+    {
+        return $this->giftCards;
+    }
+
+    public function addGiftCard(GiftCard $giftCard): static
+    {
+        if (!$this->giftCards->contains($giftCard)) {
+            $this->giftCards->add($giftCard);
+            $giftCard->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGiftCard(GiftCard $giftCard): static
+    {
+        if ($this->giftCards->removeElement($giftCard)) {
+            // set the owning side to null (unless already changed)
+            if ($giftCard->getOwner() === $this) {
+                $giftCard->setOwner(null);
             }
         }
 
