@@ -8,32 +8,43 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Repository\CardRepository;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: CardRepository::class)]
-#[ApiResource(operations: [new Get(), new GetCollection()])]
+#[ApiResource(operations: [
+    new Get(normalizationContext: ['groups' => ['card:read']]),
+    new GetCollection()
+])]
 class Card
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['card:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['card:read'])]
     private ?string $serialNumber = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['card:read'])]
     private ?string $status = null;
 
     #[ORM\Column]
+    #[Groups(['card:read'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column]
+    #[Groups(['card:read'])]
     private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\Column]
+    #[Groups(['card:read'])]
     private ?float $balance = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups(['card:read'])]
     private ?\DateTimeInterface $activationDate = null;
 
     #[ORM\ManyToOne]
@@ -41,9 +52,11 @@ class Card
     private ?User $user = null;
 
     #[ORM\Column]
+    #[Groups(['card:read'])]
     private ?int $cardNumber = null;
 
     #[ORM\Column]
+    #[Groups(['card:read'])]
     private ?int $pinCode = null;
 
     public function __construct()
@@ -121,6 +134,7 @@ class Card
 
     public function activate(): static
     {
+        $this->status = 'active';
         $this->activationDate = new \DateTime();
 
         return $this;
